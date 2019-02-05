@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AIPlayer.cs" />
+    <Compile Include="Assets\Scripts\ConditionVerifier.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\Slots.cs" />
     <Compile Include="Assets\Scripts\UI\ActiveTurnTxtUpdate.cs" />

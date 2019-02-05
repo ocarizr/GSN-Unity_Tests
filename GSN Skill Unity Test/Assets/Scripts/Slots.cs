@@ -61,21 +61,13 @@ public class Slots : MonoBehaviour
     {
         if (_ID - 15 == ID || _ID - 30 == ID || _ID + 15 == ID || _ID + 30 == ID || _ID == ID)
         {
-            if ((GameController.gc.PlayerTurn && State == 1) || (!GameController.gc.PlayerTurn && State == 2))
+            if (State == 2)
             {
-                GameController.gc.Vertical++;
+                FindObjectOfType<ConditionVerifier>().Vertical++;
             }
-
-            if (!GameController.gc.PlayerTurn)
+            else if (State == 1)
             {
-                if (State == 2)
-                {
-                    FindObjectOfType<AIPlayer>().vertical++;
-                }
-                else if (State == 1)
-                {
-                    FindObjectOfType<AIPlayer>().vertical--;
-                }
+                FindObjectOfType<ConditionVerifier>().Vertical--;
             }
         }
     }
@@ -84,21 +76,13 @@ public class Slots : MonoBehaviour
     {
         if (_ID - 2 == ID || _ID - 1 == ID || _ID + 2 == ID || _ID + 1 == ID || _ID == ID)
         {
-            if ((GameController.gc.PlayerTurn && State == 1) || (!GameController.gc.PlayerTurn && State == 2))
+            if (State == 2)
             {
-                GameController.gc.Horizontal++;
+                FindObjectOfType<ConditionVerifier>().Horizontal++;
             }
-
-            if (!GameController.gc.PlayerTurn)
+            else if (State == 1)
             {
-                if (State == 2)
-                {
-                    FindObjectOfType<AIPlayer>().horizontal++;
-                }
-                else if (State == 1)
-                {
-                    FindObjectOfType<AIPlayer>().horizontal--;
-                }
+                FindObjectOfType<ConditionVerifier>().Horizontal--;
             }
         }
     }
@@ -107,21 +91,13 @@ public class Slots : MonoBehaviour
     {
         if (_ID - 16 == ID || _ID - 32 == ID || _ID + 16 == ID || _ID + 32 == ID || _ID == ID)
         {
-            if ((GameController.gc.PlayerTurn && State == 1) || (!GameController.gc.PlayerTurn && State == 2))
+            if (State == 2)
             {
-                GameController.gc.DiagonalR++;
+                FindObjectOfType<ConditionVerifier>().DiagonalR++;
             }
-
-            if (!GameController.gc.PlayerTurn)
+            else if (State == 1)
             {
-                if (State == 2)
-                {
-                    FindObjectOfType<AIPlayer>().diagonalR++;
-                }
-                else if (State == 1)
-                {
-                    FindObjectOfType<AIPlayer>().diagonalR--;
-                }
+                FindObjectOfType<ConditionVerifier>().DiagonalR--;
             }
         }
     }
@@ -130,21 +106,13 @@ public class Slots : MonoBehaviour
     {
         if (_ID - 14 == ID || _ID - 28 == ID || _ID + 14 == ID || _ID + 28 == ID || _ID == ID)
         {
-            if ((GameController.gc.PlayerTurn && State == 1) || (!GameController.gc.PlayerTurn && State == 2))
+            if (State == 2)
             {
-                GameController.gc.DiagonalL++;
+                FindObjectOfType<ConditionVerifier>().DiagonalL++;
             }
-
-            if (!GameController.gc.PlayerTurn)
+            else if (State == 1)
             {
-                if (State == 2)
-                {
-                    FindObjectOfType<AIPlayer>().diagonalL++;
-                }
-                else if (State == 1)
-                {
-                    FindObjectOfType<AIPlayer>().diagonalL--;
-                }
+                FindObjectOfType<ConditionVerifier>().DiagonalL--;
             }
         }
     }

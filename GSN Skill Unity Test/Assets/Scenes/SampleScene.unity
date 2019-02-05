@@ -477,6 +477,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 174065045}
   m_CullTransparentMesh: 0
+--- !u!1 &195604701 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 23089625576010274, guid: 972fee674f87652459942bb4b056bf52,
+    type: 3}
+  m_PrefabInstance: {fileID: 23089624411463128}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &195604702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195604701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff61bd41b85a10b4c8be0d7c07988bcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Vertical: 0
+  Horizontal: 0
+  DiagonalL: 0
+  DiagonalR: 0
 --- !u!1 &390654811
 GameObject:
   m_ObjectHideFlags: 0
@@ -2179,7 +2201,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 23089624411463128}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 195604701}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8695b00c09b17ca4d927d82b3e57e580, type: 3}
@@ -2197,6 +2219,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Table
       objectReference: {fileID: 0}
+    - target: {fileID: 23089625576010277, guid: 972fee674f87652459942bb4b056bf52,
+        type: 3}
+      propertyPath: UIElements.Array.data[0]
+      value: 
+      objectReference: {fileID: 152797082}
+    - target: {fileID: 23089625576010277, guid: 972fee674f87652459942bb4b056bf52,
+        type: 3}
+      propertyPath: UIElements.Array.data[1]
+      value: 
+      objectReference: {fileID: 1542141872}
+    - target: {fileID: 23089625576010277, guid: 972fee674f87652459942bb4b056bf52,
+        type: 3}
+      propertyPath: UIElements.Array.data[2]
+      value: 
+      objectReference: {fileID: 1994044924}
     - target: {fileID: 23089625576010276, guid: 972fee674f87652459942bb4b056bf52,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2252,20 +2289,5 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 23089625576010277, guid: 972fee674f87652459942bb4b056bf52,
-        type: 3}
-      propertyPath: UIElements.Array.data[0]
-      value: 
-      objectReference: {fileID: 152797082}
-    - target: {fileID: 23089625576010277, guid: 972fee674f87652459942bb4b056bf52,
-        type: 3}
-      propertyPath: UIElements.Array.data[1]
-      value: 
-      objectReference: {fileID: 1542141872}
-    - target: {fileID: 23089625576010277, guid: 972fee674f87652459942bb4b056bf52,
-        type: 3}
-      propertyPath: UIElements.Array.data[2]
-      value: 
-      objectReference: {fileID: 1994044924}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 972fee674f87652459942bb4b056bf52, type: 3}

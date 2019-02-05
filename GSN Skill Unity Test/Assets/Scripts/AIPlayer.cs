@@ -3,30 +3,14 @@ using UnityEngine;
 
 public class AIPlayer : MonoBehaviour
 {
-    public int
-        vertical = 0,
-        horizontal = 0,
-        diagonalL = 0,
-        diagonalR = 0;
-
-    public bool verifyingPlayer = true;
-
     public bool placed;
+
+    ConditionVerifier cv;
 
     public void AIDecision()
     {
+        cv = GetComponent<ConditionVerifier>();
         placed = false;
-        GameObject[] sl;
-        int ID;
-        int v;
-        if (GameController.gc.PlayerPiece == 0)
-        {
-            sl = GameObject.FindGameObjectsWithTag("XPiece");
-        }
-        else
-        {
-            sl = GameObject.FindGameObjectsWithTag("OPiece");
-        }
         List<PotentialPieces> potentialPieces = new List<PotentialPieces>();
         List<PotentialPieces> playerVictoryNextTurn = new List<PotentialPieces>();
         List<PotentialPieces> AIPieces = new List<PotentialPieces>();
@@ -36,145 +20,13 @@ public class AIPlayer : MonoBehaviour
         AIPieces.Clear();
 
         // Verify All Player Pieces and possibilities
-        foreach (GameObject go in sl)
-        {
-            vertical = 0;
-            horizontal = 0;
-            diagonalR = 0;
-            diagonalL = 0;
-
-            PotentialPieces pp = new PotentialPieces();
-            ID = go.GetComponent<Slots>().ID;
-            v = ((ID - 1) % 15);
-            VerifyVertical(ID);
-            if (vertical <= -3)
-            {
-                pp.ID = ID;
-                pp.Ammount = vertical;
-                pp.Direction = "vertical";
-                potentialPieces.Add(pp);
-            }
-            VerifyHorizontal(ID, v);
-            if (horizontal <= -3)
-            {
-                pp.ID = ID;
-                pp.Ammount = horizontal;
-                pp.Direction = "horizontal";
-                potentialPieces.Add(pp);
-            }
-            VerifyDiagonals(ID, v);
-            if (diagonalL <= -3)
-            {
-                pp.ID = ID;
-                pp.Ammount = diagonalL;
-                pp.Direction = "diagonalL";
-                potentialPieces.Add(pp);
-            }
-            if (diagonalR <= -3)
-            {
-                pp.ID = ID;
-                pp.Ammount = diagonalR;
-                pp.Direction = "diagonalR";
-                potentialPieces.Add(pp);
-            }
-        }
+        potentialPieces = FillPossibilities(true, -3, potentialPieces);
 
         // If the player can win in the next turn use this
-        foreach (GameObject go in sl)
-        {
-            vertical = 0;
-            horizontal = 0;
-            diagonalR = 0;
-            diagonalL = 0;
+        playerVictoryNextTurn = FillPossibilities(true, -4, playerVictoryNextTurn);
 
-            PotentialPieces pp = new PotentialPieces();
-            ID = go.GetComponent<Slots>().ID;
-            v = ((ID - 1) % 15);
-            VerifyVertical(ID);
-            if (vertical < -3)
-            {
-                pp.ID = ID;
-                pp.Ammount = vertical;
-                pp.Direction = "vertical";
-                playerVictoryNextTurn.Add(pp);
-            }
-            VerifyHorizontal(ID, v);
-            if (horizontal < -3)
-            {
-                pp.ID = ID;
-                pp.Ammount = horizontal;
-                pp.Direction = "horizontal";
-                playerVictoryNextTurn.Add(pp);
-            }
-            VerifyDiagonals(ID, v);
-            if (diagonalL < -3)
-            {
-                pp.ID = ID;
-                pp.Ammount = diagonalL;
-                pp.Direction = "diagonalL";
-                playerVictoryNextTurn.Add(pp);
-            }
-            if (diagonalR < -3)
-            {
-                pp.ID = ID;
-                pp.Ammount = diagonalR;
-                pp.Direction = "diagonalR";
-                playerVictoryNextTurn.Add(pp);
-            }
-        }
-
-        if (GameController.gc.PlayerPiece == 0)
-        {
-            sl = GameObject.FindGameObjectsWithTag("OPiece");
-        }
-        else
-        {
-            sl = GameObject.FindGameObjectsWithTag("XPiece");
-        }
-
-        // Verify All AI Pieces and Possibilities
-        foreach (GameObject go in sl)
-        {
-            vertical = 0;
-            horizontal = 0;
-            diagonalR = 0;
-            diagonalL = 0;
-
-            PotentialPieces pp = new PotentialPieces();
-            ID = go.GetComponent<Slots>().ID;
-            v = ((ID - 1) % 15);
-            VerifyVertical(ID);
-            if (vertical == 4)
-            {
-                pp.ID = ID;
-                pp.Ammount = vertical;
-                pp.Direction = "vertical";
-                AIPieces.Add(pp);
-            }
-            VerifyHorizontal(ID, v);
-            if (horizontal == 4)
-            {
-                pp.ID = ID;
-                pp.Ammount = horizontal;
-                pp.Direction = "horizontal";
-                AIPieces.Add(pp);
-            }
-            VerifyDiagonals(ID, v);
-            if (diagonalL == 4)
-            {
-                pp.ID = ID;
-                pp.Ammount = diagonalL;
-                pp.Direction = "diagonalL";
-                AIPieces.Add(pp);
-            }
-            if (diagonalR == 4)
-            {
-                pp.ID = ID;
-                pp.Ammount = diagonalR;
-                pp.Direction = "diagonalR";
-                AIPieces.Add(pp);
-            }
-        }
+        // If the AI can win in this turn use this as priority
+        AIPieces = FillPossibilities(false, 4, AIPieces);
 
         if (AIPieces.Count > 0)
         {
@@ -197,6 +49,17 @@ public class AIPlayer : MonoBehaviour
             {
                 while (!placed)
                 {
+                    GameObject[] sl;
+
+                    if (GameController.gc.PlayerPiece == 0)
+                    {
+                        sl = GameObject.FindGameObjectsWithTag("OPiece");
+                    }
+                    else
+                    {
+                        sl = GameObject.FindGameObjectsWithTag("XPiece");
+                    }
+
                     if (sl.Length > 0)
                     {
                         PutPiece(sl);
@@ -208,6 +71,76 @@ public class AIPlayer : MonoBehaviour
                 }
             }
         }
+    }
+
+    private List<PotentialPieces> FillPossibilities(bool player, int ammount, List<PotentialPieces> PotentialPieces)
+    {
+        GameObject[] sl;
+        if (player)
+        {
+            if (GameController.gc.PlayerPiece == 0)
+            {
+                sl = GameObject.FindGameObjectsWithTag("XPiece");
+            }
+            else
+            {
+                sl = GameObject.FindGameObjectsWithTag("OPiece");
+            }
+        }
+        else
+        {
+            if (GameController.gc.PlayerPiece == 0)
+            {
+                sl = GameObject.FindGameObjectsWithTag("OPiece");
+            }
+            else
+            {
+                sl = GameObject.FindGameObjectsWithTag("XPiece");
+            }
+        }
+
+        // Verify All AI Pieces and Possibilities
+        foreach (GameObject go in sl)
+        {
+            cv.ResetValues();
+
+            PotentialPieces pp = new PotentialPieces();
+            int ID = go.GetComponent<Slots>().ID;
+            int v = ((ID - 1) % 15);
+            cv.VerifyVertical(ID);
+            if (cv.Vertical == ammount)
+            {
+                pp.ID = ID;
+                pp.Ammount = cv.Vertical;
+                pp.Direction = "vertical";
+                PotentialPieces.Add(pp);
+            }
+            cv.VerifyHorizontal(ID, v);
+            if (cv.Horizontal == ammount)
+            {
+                pp.ID = ID;
+                pp.Ammount = cv.Horizontal;
+                pp.Direction = "horizontal";
+                PotentialPieces.Add(pp);
+            }
+            cv.VerifyDiagonals(ID, v);
+            if (cv.DiagonalL == ammount)
+            {
+                pp.ID = ID;
+                pp.Ammount = cv.DiagonalL;
+                pp.Direction = "diagonalL";
+                PotentialPieces.Add(pp);
+            }
+            if (cv.DiagonalR == ammount)
+            {
+                pp.ID = ID;
+                pp.Ammount = cv.DiagonalR;
+                pp.Direction = "diagonalR";
+                PotentialPieces.Add(pp);
+            }
+        }
+
+        return PotentialPieces;
     }
 
     private void PutPiece(GameObject[] sl)
@@ -432,31 +365,6 @@ public class AIPlayer : MonoBehaviour
                     }
                 }
                 break;
-        }
-    }
-
-    public void VerifyVertical(int ID)
-    {
-        if (ID > 30 && ID < 196)                        // Verify Vertical
-        {
-            BroadcastMessage("Vertical", ID);
-        }
-    }
-
-    public void VerifyHorizontal(int ID, int v)
-    {
-        if (v > 2 && v < 13)                            // Verify Horizontal
-        {
-            BroadcastMessage("Horizontal", ID);
-        }
-    }
-
-    public void VerifyDiagonals(int ID, int v)
-    {
-        if (ID > 30 && ID < 196 && v > 2 && v < 13)     // Verify Diagonal
-        {
-            BroadcastMessage("DiagonalR", ID);
-            BroadcastMessage("DiagonalL", ID);
         }
     }
 

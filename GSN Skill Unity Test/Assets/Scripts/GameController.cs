@@ -20,14 +20,9 @@ public class GameController : MonoBehaviour
 
     public GameObject EmptySlot;
 
-    [HideInInspector]
-    public int
-        Horizontal = 0,
-        Vertical = 0,
-        DiagonalR = 0,
-        DiagonalL = 0;
-
     public GameObject[] UIElements;
+
+    ConditionVerifier cv;
 
     private void Awake()
     {
@@ -38,6 +33,8 @@ public class GameController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        cv = GetComponent<ConditionVerifier>();
 
         if (PlayerPrefs.HasKey("Victory"))
         {
@@ -55,10 +52,7 @@ public class GameController : MonoBehaviour
 
     public void AICondition()
     {
-        Horizontal = 0;
-        Vertical = 0;
-        DiagonalR = 0;
-        DiagonalL = 0;
+        cv.ResetValues();
 
         GameObject[] go;
 
@@ -75,9 +69,18 @@ public class GameController : MonoBehaviour
         {
             int ID = s.GetComponent<Slots>().ID;
             int v = ((ID - 1) % 15);
-            VerifyVertical(ID);
-            VerifyHorizontal(ID, v);
-            VerifyDiagonals(ID, v);
+            cv.VerifyVertical(ID);
+            cv.VerifyHorizontal(ID, v);
+            cv.VerifyDiagonals(ID, v);
+
+            if (cv.Vertical == 5 || cv.Horizontal == 5 || cv.DiagonalL == 5 || cv.DiagonalR == 5)
+            {
+                GameFinish(1);
+            }
+            else
+            {
+                cv.ResetValues();
+            }
         }
         if (GameStart)              // if don't win
         {
@@ -89,10 +92,7 @@ public class GameController : MonoBehaviour
 
     public void PlayerCondition()
     {
-        Horizontal = 0;
-        Vertical = 0;
-        DiagonalR = 0;
-        DiagonalL = 0;
+        cv.ResetValues();
 
         GameObject[] go;
 
@@ -109,10 +109,18 @@ public class GameController : MonoBehaviour
         {
             int ID = s.GetComponent<Slots>().ID;
             int v = ((ID - 1) % 15);
+            cv.VerifyVertical(ID);
+            cv.VerifyHorizontal(ID, v);
+            cv.VerifyDiagonals(ID, v);
 
-            VerifyVertical(ID);
-            VerifyHorizontal(ID, v);
-            VerifyDiagonals(ID, v);
+            if (cv.Vertical == -5 || cv.Horizontal == -5 || cv.DiagonalL == -5 || cv.DiagonalR == -5)
+            {
+                GameFinish(2);
+            }
+            else
+            {
+                cv.ResetValues();
+            }
         }
 
         if (GameStart)              // if don't win
@@ -123,103 +131,12 @@ public class GameController : MonoBehaviour
         VerifyTableFull();
     }
 
-    public void VerifyVertical(int ID)
-    {
-        if (ID > 30 && ID < 196)                        // Verify Vertical
-        {
-            BroadcastMessage("Vertical", ID);
-            if (Vertical == 5)
-            {
-                GameStart = false;
-                if (PlayerTurn)
-                {
-                    GameFinish(2);
-                }
-                else
-                {
-                    GameFinish(1);
-                }
-            }
-            else
-            {
-                Vertical = 0;
-            }
-        }
-    }
-
-    public void VerifyHorizontal(int ID, int v)
-    {
-        if (v > 2 && v < 13)                            // Verify Horizontal
-        {
-            BroadcastMessage("Horizontal", ID);
-            if (Horizontal == 5)
-            {
-                GameStart = false;
-                if (PlayerTurn)
-                {
-                    GameFinish(2);
-                }
-                else
-                {
-                    GameFinish(1);
-                }
-            }
-            else
-            {
-                Horizontal = 0;
-            }
-        }
-    }
-
-    public void VerifyDiagonals(int ID, int v)
-    {
-        if (ID > 30 && ID < 196 && v > 2 && v < 13)     // Verify Diagonal
-        {
-            BroadcastMessage("DiagonalR", ID);
-            if (DiagonalR == 5)
-            {
-                GameStart = false;
-                if (PlayerTurn)
-                {
-                    GameFinish(2);
-                }
-                else
-                {
-                    GameFinish(1);
-                }
-            }
-            else
-            {
-                DiagonalR = 0;
-            }
-            BroadcastMessage("DiagonalL", ID);
-            if (DiagonalL == 5)
-            {
-                GameStart = false;
-                if (PlayerTurn)
-                {
-                    GameFinish(2);
-                }
-                else
-                {
-                    GameFinish(1);
-                }
-            }
-            else
-            {
-                DiagonalL = 0;
-            }
-        }
-    }
-
     private void VerifyTableFull()
     {
         GameObject[] go = GameObject.FindGameObjectsWithTag("EmptySlot");
 
         if (go == null)
         {
-            Draw++;
-            GameStart = false;
             GameFinish(0);
         }
     }
@@ -264,6 +181,7 @@ public class GameController : MonoBehaviour
     {
         UIElements[1].SetActive(false);
         UIElements[2].SetActive(true);
+        GameStart = false;
         gameResult = result;
         switch (result)
         {
