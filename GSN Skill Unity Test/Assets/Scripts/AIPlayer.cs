@@ -666,9 +666,4 @@ public class PotentialPieces
     public int ID;
     public int Ammount;
     public string Direction;
-
-    public override string ToString()
-    {
-        return $"{ID} has {Ammount} Pieces in {Direction}";
-    }
 }
