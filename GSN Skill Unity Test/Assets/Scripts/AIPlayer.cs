@@ -20,13 +20,13 @@ public class AIPlayer : MonoBehaviour
         AIPieces.Clear();
 
         // Verify All Player Pieces and possibilities
-        FillPossibilities(true, -3, ref potentialPieces);
+        FillPossibilities(true, -3, potentialPieces);
 
         // If the player can win in the next turn use this
-        FillPossibilities(true, -4, ref playerVictoryNextTurn);
+        FillPossibilities(true, -4, playerVictoryNextTurn);
 
         // If the AI can win in this turn use this as priority
-        FillPossibilities(false, 4, ref AIPieces);
+        FillPossibilities(false, 4, AIPieces);
 
         if (AIPieces.Count > 0)
         {
@@ -73,7 +73,7 @@ public class AIPlayer : MonoBehaviour
         }
     }
 
-    private void FillPossibilities(bool player, int ammount, ref List<PotentialPieces> PotentialPieces)
+    private void FillPossibilities(bool player, int ammount, List<PotentialPieces> PotentialPieces)
     {
         GameObject[] sl;
         if (player)
